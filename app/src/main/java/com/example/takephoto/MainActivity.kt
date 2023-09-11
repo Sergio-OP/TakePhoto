@@ -21,6 +21,9 @@ class MainActivity : AppCompatActivity() {
         videoView.setVideoURI(uri)
         videoView.start()
         videoView.requestFocus()
+        videoView.setOnPreparedListener { it.setLooping(true) }
+
+
 
     }
 }
