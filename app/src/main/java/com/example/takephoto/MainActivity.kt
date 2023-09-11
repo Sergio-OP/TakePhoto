@@ -2,11 +2,10 @@ package com.example.takephoto
 
 import android.content.pm.ActivityInfo
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.MediaController
 import android.widget.VideoView
+import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         videoView.requestFocus()
         videoView.setOnPreparedListener { it.setLooping(true) }
 
-
-
     }
+
+
 }
