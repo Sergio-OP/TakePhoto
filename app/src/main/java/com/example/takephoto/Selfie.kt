@@ -1,6 +1,7 @@
 package com.example.takephoto
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
@@ -37,24 +38,36 @@ class Selfie : AppCompatActivity(), TextToSpeech.OnInitListener {
         textToSpeech = TextToSpeech(this, this)
         textToSpeech.setOnUtteranceProgressListener(object: UtteranceProgressListener(){
             override fun onStart(p0: String?) {
-                TODO("Not yet implemented")
+                Toast.makeText(this@Selfie, "Start Speaking", Toast.LENGTH_SHORT).show()
             }
 
             override fun onDone(p0: String?) {
-                TODO("Not yet implemented")
+                Toast.makeText(this@Selfie, "Finished Speaking", Toast.LENGTH_SHORT).show()
+                goToPreviewCamera()
             }
 
             override fun onError(p0: String?) {
-                TODO("Not yet implemented")
+                Toast.makeText(this@Selfie, "Error Speaking", Toast.LENGTH_SHORT).show()
             }
 
         })
 
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
-            textToSpeech.speak("Great! Let's take a selfie", TextToSpeech.QUEUE_FLUSH, null, "3")
+            textToSpeech.speak("Great! Let's take a selfie", TextToSpeech.QUEUE_FLUSH, null, "MyUniqueId")
         }, 1000)
 
+        val intentHandler = Handler(Looper.getMainLooper())
+        intentHandler.postDelayed({
+            goToPreviewCamera()
+        }, 4000)
+
+
+    }
+
+    private fun goToPreviewCamera(){
+        val intent = Intent(this, PreviewCamera::class.java)
+        startActivity(intent)
     }
 
     override fun onInit(p0: Int) {

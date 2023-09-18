@@ -57,7 +57,6 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
             textToSpeech.speak("Hey! before you go, would you like to take a selfie and capture this great moment?", TextToSpeech.QUEUE_FLUSH, null, "1")
-            //speakText("Hey! before you go, would you like to take a selfie and capture this great moment?")
         }, 2000)
 
     }
@@ -72,9 +71,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
         }
     }
 
-    /*private fun speakText(text: String) {
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, "1")
-    }*/
+
 
     override fun onDestroy() {
         super.onDestroy()

@@ -55,7 +55,6 @@ class NoSelfie : AppCompatActivity(), TextToSpeech.OnInitListener {
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
             textToSpeech.speak("I'll be here in case your opinion change", TextToSpeech.QUEUE_FLUSH, null, "2")
-            //speakText("Hey! before you go, would you like to take a selfie and capture this great moment?")
         }, 2000)
 
     }
