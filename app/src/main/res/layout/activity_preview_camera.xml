@@ -6,14 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".PreviewCamera">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="PREVIEW CAMERA VIEW"
-        />
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewView"
+        android:layout_height="match_parent"
+         android:layout_width="match_parent"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

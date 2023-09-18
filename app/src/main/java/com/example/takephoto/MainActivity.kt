@@ -71,8 +71,6 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
         }
     }
 
-
-
     override fun onDestroy() {
         super.onDestroy()
         if(::textToSpeech.isInitialized){
