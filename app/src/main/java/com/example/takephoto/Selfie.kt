@@ -8,27 +8,26 @@ import android.os.Handler
 import android.os.Looper
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
 import java.util.Locale
 
-class NoSelfie : AppCompatActivity(), TextToSpeech.OnInitListener {
+class Selfie : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private lateinit var textToSpeech: TextToSpeech
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_no_selfie)
+        setContentView(R.layout.activity_selfie)
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         actionBar?.hide()
 
-        val videoView =  findViewById<VideoView>(R.id.video_no_selfie)
+        val videoView =  findViewById<VideoView>(R.id.video_selfie)
         val uri = Uri.parse("android.resource://" + packageName + "/" + R.raw.temi_face)
         videoView.setVideoURI(uri)
         videoView.start()
@@ -38,25 +37,23 @@ class NoSelfie : AppCompatActivity(), TextToSpeech.OnInitListener {
         textToSpeech = TextToSpeech(this, this)
         textToSpeech.setOnUtteranceProgressListener(object: UtteranceProgressListener(){
             override fun onStart(p0: String?) {
-                Log.i("TAG", "start speaking")
+                TODO("Not yet implemented")
             }
 
             override fun onDone(p0: String?) {
-                Log.i("TAG", "finished speaking")
-                finishAffinity()
+                TODO("Not yet implemented")
             }
 
             override fun onError(p0: String?) {
-                Log.i("TAG", "error speaking")
+                TODO("Not yet implemented")
             }
 
         })
 
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
-            textToSpeech.speak("I'll be here in case your opinion change", TextToSpeech.QUEUE_FLUSH, null, "2")
-            //speakText("Hey! before you go, would you like to take a selfie and capture this great moment?")
-        }, 2000)
+            textToSpeech.speak("Great! Let's take a selfie", TextToSpeech.QUEUE_FLUSH, null, "3")
+        }, 1000)
 
     }
 
@@ -71,10 +68,10 @@ class NoSelfie : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         if(::textToSpeech.isInitialized){
             textToSpeech.stop()
             textToSpeech.shutdown()
         }
+        super.onDestroy()
     }
 }
