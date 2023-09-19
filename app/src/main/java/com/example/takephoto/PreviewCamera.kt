@@ -1,6 +1,7 @@
 package com.example.takephoto
 
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
@@ -89,9 +90,18 @@ class PreviewCamera : AppCompatActivity() {
     }
 
     private fun createImageFile(): File {
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
-        val storageDir = File("/storage/emulated/0/DCIM/Camera")
-        return File.createTempFile("JPEG_${timeStamp}", ".jpg", storageDir)
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US).format(Date())
+
+        // Define la carpeta de destino en la que deseas guardar las fotos.
+        val folderName = "TemiPhotos"
+        val storageDir = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), folderName)
+
+        if (!storageDir.exists()) {
+            storageDir.mkdirs()
+        }
+
+        val imageFileName = "JPEG_${timeStamp}.jpg"
+        return File(storageDir, imageFileName)
     }
 
     companion object {
