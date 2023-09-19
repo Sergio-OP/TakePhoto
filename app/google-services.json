@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "121993829890",
+    "project_id": "temi-take-photo",
+    "storage_bucket": "temi-take-photo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:121993829890:android:b995bbfe9d368838b3d11b",
+        "android_client_info": {
+          "package_name": "com.example.takephoto"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDodqZTZp4JZ469x1TUlkUOKc6z56gKf4Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

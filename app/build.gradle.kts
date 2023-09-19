@@ -1,6 +1,9 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    // Add the Google services Gradle plugin
+    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -51,4 +54,9 @@ dependencies {
 
     implementation("androidx.concurrent:concurrent-futures-ktx:1.1.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+
+    // Import the Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+    implementation(platform("com.google.firebase:firebase-storage-ktx"))
+
 }
