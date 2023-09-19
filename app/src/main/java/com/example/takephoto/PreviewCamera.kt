@@ -1,47 +1,102 @@
 package com.example.takephoto
 
-import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.view.View
+import android.util.Log
+import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleOwner
-import com.google.common.util.concurrent.ListenableFuture
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class PreviewCamera : AppCompatActivity() {
 
-    private lateinit var cameraProviderFuture: ListenableFuture<ProcessCameraProvider>
+
+    private var imageCapture: ImageCapture? = null
+    private lateinit var cameraExecutor: ExecutorService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preview_camera)
 
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
-        actionBar?.hide()
+        startCamera()
 
-        cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+        val buttonToTakeSelfie = findViewById<Button>(R.id.btn_capture)
+        buttonToTakeSelfie.setOnClickListener {takePhoto()}
 
-        cameraProviderFuture.addListener(Runnable {
-            val cameraProvider = cameraProviderFuture.get()
-            bindPreview(cameraProvider)
+        cameraExecutor = Executors.newSingleThreadExecutor()
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cameraExecutor.shutdown()
+    }
+
+
+    private fun startCamera(){
+        var previewView = this.findViewById<androidx.camera.view.PreviewView>(R.id.previewView).surfaceProvider
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+        cameraProviderFuture.addListener({
+            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+            val preview = Preview.Builder().build()
+                .also {
+                    it.setSurfaceProvider(previewView)
+                }
+            imageCapture = ImageCapture.Builder().build()
+            val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
+            try {
+                cameraProvider.unbindAll()
+                cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
+            } catch (exc: Exception) {
+                Log.e("TAG", "Use case binding failed")
+            }
         }, ContextCompat.getMainExecutor(this))
     }
 
-    private fun bindPreview(cameraProvider: ProcessCameraProvider) {
+    private fun takePhoto(){
+        val imageCapture = imageCapture ?: return
 
-        var previewView = this.findViewById<androidx.camera.view.PreviewView>(R.id.previewView)
+        val photoFile = createImageFile()
 
-        var preview: Preview = Preview.Builder()
-                .build()
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
-        var cameraSelector: CameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
+        imageCapture.takePicture(
+            outputOptions,
+            ContextCompat.getMainExecutor(this),
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onError(exc: ImageCaptureException) {
+                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
+                }
 
-        preview.setSurfaceProvider(previewView.surfaceProvider)
+                override fun
+                        onImageSaved(output: ImageCapture.OutputFileResults){
+                    val msg = "Photo capture succeeded: ${output.savedUri}"
+                    Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, msg)
+                }
+            }
+        )
+    }
 
-        var camera = cameraProvider.bindToLifecycle(this as LifecycleOwner, cameraSelector, preview)
+    private fun createImageFile(): File {
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
+        val storageDir = File("/storage/emulated/0/DCIM/Camera")
+        return File.createTempFile("JPEG_${timeStamp}", ".jpg", storageDir)
+    }
+
+    companion object {
+        private const val TAG = "CameraXApp"
+        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+
     }
 }
