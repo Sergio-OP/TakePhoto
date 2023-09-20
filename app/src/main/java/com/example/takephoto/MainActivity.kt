@@ -24,7 +24,6 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         actionBar?.hide()
