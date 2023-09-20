@@ -60,4 +60,9 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
     implementation("com.google.firebase:firebase-storage-ktx")
 
+    implementation("com.squareup.okhttp3:okhttp:4.9.1")
+
+    implementation ("com.caverock:androidsvg:1.4")
+
+
 }
