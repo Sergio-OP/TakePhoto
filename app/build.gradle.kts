@@ -43,6 +43,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.camera:camera-view:1.2.3")
     implementation("androidx.camera:camera-lifecycle:1.2.3")
+    implementation("com.google.firebase:firebase-common-ktx:20.3.3")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -57,6 +58,6 @@ dependencies {
 
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
-    implementation(platform("com.google.firebase:firebase-storage-ktx"))
+    implementation("com.google.firebase:firebase-storage-ktx")
 
 }

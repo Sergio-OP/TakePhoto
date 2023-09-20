@@ -1,5 +1,6 @@
 package com.example.takephoto
 
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
@@ -12,6 +13,9 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -25,6 +29,8 @@ class PreviewCamera : AppCompatActivity() {
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
 
+    lateinit var storage: FirebaseStorage
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preview_camera)
@@ -35,6 +41,8 @@ class PreviewCamera : AppCompatActivity() {
         buttonToTakeSelfie.setOnClickListener {takePhoto()}
 
         cameraExecutor = Executors.newSingleThreadExecutor()
+
+        storage = Firebase.storage
 
     }
 
@@ -84,9 +92,70 @@ class PreviewCamera : AppCompatActivity() {
                     val msg = "Photo capture succeeded: ${output.savedUri}"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
+
+
+                    var storageRef = storage.reference
+                    /*var imagesRef: StorageReference? = storageRef.child("images")*/
+                    val selfieRef = storageRef.child("images/selfie${photoFile.name}.jpg")
+                    var selfieFile = Uri.fromFile(photoFile)
+                    var uploadTask = selfieRef.putFile(selfieFile)
+
+                    uploadTask.addOnFailureListener{
+                        Log.i("CloudFirebase", "Update file failure")
+                    }.addOnSuccessListener{
+                        Log.i("CloudFirebase", "Update file success")
+                    }
+
+                    val urlTask = uploadTask.continueWithTask {task ->
+                        if(!task.isSuccessful) {
+                            task.exception?.let {
+                                throw it
+                            }
+                        }
+                        selfieRef.downloadUrl
+                    }.addOnCompleteListener { task ->
+                        if( task.isSuccessful ) {
+                            val downloadUri = task.result
+                            Log.i("CloudFirebase", "Url Selfie: $downloadUri")
+                        } else {
+                            // Handle Failures
+                        }
+
+                    }
+
                 }
             }
         )
+
+        var storageRef = storage.reference
+        /*var imagesRef: StorageReference? = storageRef.child("images")*/
+        val selfieRef = storageRef.child("images/${photoFile.name}")
+        var selfieFile = Uri.fromFile(photoFile)
+        var uploadTask = selfieRef.putFile(selfieFile)
+
+        uploadTask.addOnFailureListener{
+            Log.i("CloudFirebase", "Update file failure")
+        }.addOnSuccessListener{
+            Log.i("CloudFirebase", "Update file success")
+        }
+
+        val urlTask = uploadTask.continueWithTask {task ->
+            if(!task.isSuccessful) {
+                task.exception?.let {
+                    throw it
+                }
+            }
+            selfieRef.downloadUrl
+        }.addOnCompleteListener { task ->
+            if( task.isSuccessful ) {
+                val downloadUri = task.result
+                Log.i("CloudFirebase", "Url Selfie: $downloadUri")
+            } else {
+                // Handle Failures
+            }
+
+        }
+
     }
 
     private fun createImageFile(): File {
