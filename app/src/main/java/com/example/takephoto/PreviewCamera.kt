@@ -1,10 +1,12 @@
 package com.example.takephoto
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -36,6 +38,10 @@ class PreviewCamera : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preview_camera)
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+        actionBar?.hide()
 
         startCamera()
 
@@ -99,7 +105,7 @@ class PreviewCamera : AppCompatActivity() {
 //                    val url = uploadImage(photoFile)
                     val url = "https://www.google.com/"
 
-                    val intent = Intent(this@PreviewCamera, QrCode::class.java)
+                    val intent = Intent(this@PreviewCamera, AfterSelfie::class.java)
                     intent.putExtra("url", url)
                     startActivity(intent)
                 }

@@ -15,15 +15,13 @@ import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
 import java.util.Locale
 
-class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
+class AfterSelfie : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private lateinit var textToSpeech: TextToSpeech
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
+        setContentView(R.layout.activity_after_selfie)
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -37,17 +35,19 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
 
             override fun onDone(p0: String?) {
                 Log.i("TAG", "finished speaking")
-                val intent = Intent(this@MainActivity, Question::class.java)
-                startActivity(intent)
+                val nextIntent = Intent(this@AfterSelfie, QrCode::class.java)
+
+                val url = intent.getStringExtra("url")
+                nextIntent.putExtra("url", url)
+                startActivity(nextIntent)
             }
 
-                override fun onError(p0: String?) {
+            override fun onError(p0: String?) {
                 Log.i("TAG", "error speaking")
             }
-
         })
 
-        val videoView =  findViewById<VideoView>(R.id.video_face)
+        val videoView =  findViewById<VideoView>(R.id.video_face_after_selfie)
         val uri = Uri.parse("android.resource://" + packageName + "/" + R.raw.temi_face)
         videoView.setVideoURI(uri)
         videoView.start()
@@ -56,9 +56,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
 
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
-            textToSpeech.speak("Hey! before you go, would you like to take a selfie and capture this great moment?", TextToSpeech.QUEUE_FLUSH, null, "1")
-        }, 1000)
-
+            textToSpeech.speak("You look amazing! Don't forget to scan this QR code and download your selfie.", TextToSpeech.QUEUE_FLUSH, null, "1")
+        }, 2000)
     }
 
     override fun onInit(p0: Int) {
@@ -78,5 +77,4 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
             textToSpeech.shutdown()
         }
     }
-
 }

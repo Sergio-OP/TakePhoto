@@ -21,6 +21,9 @@
         android:theme="@style/Theme.TakePhoto"
         tools:targetApi="31">
         <activity
+            android:name=".AfterSelfie"
+            android:exported="false" />
+        <activity
             android:name=".QrCode"
             android:exported="false" />
         <activity
