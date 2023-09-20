@@ -2,10 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-feature android:name="android.hardware.camera.any" />
+
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
@@ -19,6 +21,9 @@
         android:theme="@style/Theme.TakePhoto"
         tools:targetApi="31">
         <activity
+            android:name=".QrCode"
+            android:exported="false" />
+        <activity
             android:name=".PreviewCamera"
             android:exported="false" />
         <activity
@@ -30,7 +35,6 @@
         <activity
             android:name=".Question"
             android:exported="false" />
-
         <activity
             android:name=".MainActivity"
             android:exported="true">
