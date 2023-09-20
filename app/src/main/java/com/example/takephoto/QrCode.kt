@@ -4,6 +4,8 @@ import android.content.pm.ActivityInfo
 import android.graphics.Picture
 import android.graphics.drawable.PictureDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -35,6 +37,10 @@ class QrCode : AppCompatActivity() {
             postHttpPetition(url)
         }
 
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed({
+            finishAffinity()
+        }, 10000)
     }
 
 
