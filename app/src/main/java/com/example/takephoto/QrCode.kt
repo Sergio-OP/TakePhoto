@@ -1,5 +1,6 @@
 package com.example.takephoto
 
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Picture
 import android.graphics.drawable.PictureDrawable
@@ -39,8 +40,9 @@ class QrCode : AppCompatActivity() {
 
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
-            finishAffinity()
-        }, 10000)
+            val intent = Intent(this, Farewell::class.java)
+            startActivity(intent)
+        }, 20000)
     }
 
 

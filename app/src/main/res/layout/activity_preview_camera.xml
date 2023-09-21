@@ -8,8 +8,10 @@
 
     <TextureView
         android:id="@+id/texture_view"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-         android:layout_width="match_parent"/>
+        android:rotation="-90"
+        android:scaleY="2" />
 
     <Button
         android:id="@+id/btn_capture"

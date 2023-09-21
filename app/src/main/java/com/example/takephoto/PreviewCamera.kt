@@ -3,7 +3,6 @@ package com.example.takephoto
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.graphics.ImageFormat
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.CameraCaptureSession
@@ -40,6 +39,7 @@ class PreviewCamera : AppCompatActivity() {
     private lateinit var textureView: TextureView
     private lateinit var cameraCaptureSession: CameraCaptureSession
     private lateinit var cameraDevice: CameraDevice
+    private lateinit var captureRequest: CaptureRequest
     private lateinit var handler: Handler
     private lateinit var handlerThread: HandlerThread
     private lateinit var imageReader: ImageReader
@@ -51,7 +51,7 @@ class PreviewCamera : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preview_camera)
 
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         actionBar?.hide()
 
@@ -89,7 +89,7 @@ class PreviewCamera : AppCompatActivity() {
 
         }
 
-        imageReader = ImageReader.newInstance(1080,1920, ImageFormat.JPEG, 1)
+        imageReader = ImageReader.newInstance(1920,1080, ImageFormat.JPEG, 1)
         imageReader.setOnImageAvailableListener(object : ImageReader.OnImageAvailableListener {
             override fun onImageAvailable(p0: ImageReader?) {
 
@@ -112,6 +112,8 @@ class PreviewCamera : AppCompatActivity() {
 
             }
         }, handler)
+
+
 
     }
 
