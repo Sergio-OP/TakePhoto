@@ -2,6 +2,7 @@ package com.example.takephoto
 
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -23,6 +24,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        getPermissions()
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -59,6 +62,30 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
         }, 1000)
 
     }
+
+    private fun getPermissions() {
+        var permissionsList = mutableListOf<String>()
+
+        if(checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+            permissionsList.add(android.Manifest.permission.CAMERA)
+        if(checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            permissionsList.add(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+        if(checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            permissionsList.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+        if(permissionsList.size > 0) {
+            requestPermissions(permissionsList.toTypedArray(), 101)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        grantResults.forEach {
+            if( it!= PackageManager.PERMISSION_GRANTED )
+                getPermissions()
+        }
+    }
+
 
     override fun onInit(p0: Int) {
         if(p0 == TextToSpeech.SUCCESS){
