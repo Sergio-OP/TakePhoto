@@ -105,6 +105,7 @@ class PreviewCamera : AppCompatActivity() {
 //                    val url = uploadImage(photoFile)
                     val url = "https://www.google.com/"
 
+                    // TODO: implementar intent cuando uploadImage sea éxitoso
                     val intent = Intent(this@PreviewCamera, AfterSelfie::class.java)
                     intent.putExtra("url", url)
                     startActivity(intent)
@@ -112,33 +113,6 @@ class PreviewCamera : AppCompatActivity() {
             }
         )
 
-        var storageRef = storage.reference
-        val selfieRef = storageRef.child("images/${photoFile.name}")
-        var selfieFile = Uri.fromFile(photoFile)
-        var uploadTask = selfieRef.putFile(selfieFile)
-
-        uploadTask.addOnFailureListener{
-            Log.i("CloudFirebase", "Update file failure")
-        }.addOnSuccessListener{
-            Log.i("CloudFirebase", "Update file success")
-        }
-
-        val urlTask = uploadTask.continueWithTask {task ->
-            if(!task.isSuccessful) {
-                task.exception?.let {
-                    throw it
-                }
-            }
-            selfieRef.downloadUrl
-        }.addOnCompleteListener { task ->
-            if( task.isSuccessful ) {
-                val downloadUri = task.result
-                Log.i("CloudFirebase", "Url Selfie: $downloadUri")
-            } else {
-                // Handle Failures
-            }
-
-        }
 
     }
 
