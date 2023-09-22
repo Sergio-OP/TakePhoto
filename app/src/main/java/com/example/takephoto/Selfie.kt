@@ -109,11 +109,11 @@ class Selfie : AppCompatActivity(), TextToSpeech.OnInitListener, OnGoToLocationS
             OnGoToLocationStatusChangedListener.GOING -> { Log.i("Temi", "Going Walking") }
             OnGoToLocationStatusChangedListener.COMPLETE -> {
                 Log.i("Temi", "Complete Walking")
-                when(status) {
-                    "Selfie1" -> {
+                when(location) {
+                    "selfie1" -> {
                         textToSpeech.speak("Smile!", TextToSpeech.QUEUE_FLUSH, null, "2")
                     }
-                    "Selfie2" -> {
+                    "selfie2" -> {
                         goToPreviewCamera()
                     }
                 }
