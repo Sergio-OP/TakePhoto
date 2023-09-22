@@ -28,12 +28,7 @@ class NoSelfie : AppCompatActivity(), TextToSpeech.OnInitListener {
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         actionBar?.hide()
 
-        val videoView =  findViewById<VideoView>(R.id.video_no_selfie)
-        val uri = Uri.parse("android.resource://" + packageName + "/" + R.raw.temi_face)
-        videoView.setVideoURI(uri)
-        videoView.start()
-        videoView.requestFocus()
-        videoView.setOnPreparedListener { it.setLooping(true) }
+        playTemiFace()
 
         textToSpeech = TextToSpeech(this, this)
         textToSpeech.setOnUtteranceProgressListener(object: UtteranceProgressListener(){
@@ -75,5 +70,14 @@ class NoSelfie : AppCompatActivity(), TextToSpeech.OnInitListener {
             textToSpeech.stop()
             textToSpeech.shutdown()
         }
+    }
+
+    private fun playTemiFace(){
+        val videoView =  findViewById<VideoView>(R.id.video_no_selfie)
+        val uri = Uri.parse("android.resource://" + packageName + "/" + R.raw.temi_face)
+        videoView.setVideoURI(uri)
+        videoView.start()
+        videoView.requestFocus()
+        videoView.setOnPreparedListener { it.setLooping(true) }
     }
 }

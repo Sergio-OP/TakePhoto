@@ -48,16 +48,11 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
             }
         })
 
-        val videoView =  findViewById<VideoView>(R.id.video_face)
-        val uri = Uri.parse("android.resource://" + packageName + "/" + R.raw.temi_face)
-        videoView.setVideoURI(uri)
-        videoView.start()
-        videoView.requestFocus()
-        videoView.setOnPreparedListener { it.setLooping(true) }
+        playTemiFace()
 
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
-            textToSpeech.speak("Hey! before you go, would you like to take a selfie and capture this great moment?", TextToSpeech.QUEUE_FLUSH, null, "1")
+            textToSpeech.speak("Hi! Would you like to take a selfie?", TextToSpeech.QUEUE_FLUSH, null, "1")
         }, 1000)
 
     }
@@ -102,6 +97,15 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
             textToSpeech.stop()
             textToSpeech.shutdown()
         }
+    }
+
+    private fun playTemiFace(){
+        val videoView =  findViewById<VideoView>(R.id.video_face)
+        val uri = Uri.parse("android.resource://" + packageName + "/" + R.raw.temi_face)
+        videoView.setVideoURI(uri)
+        videoView.start()
+        videoView.requestFocus()
+        videoView.setOnPreparedListener { it.setLooping(true) }
     }
 
 }

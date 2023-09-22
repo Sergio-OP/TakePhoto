@@ -21,7 +21,7 @@ import java.util.Locale
 class Selfie : AppCompatActivity(), TextToSpeech.OnInitListener, OnGoToLocationStatusChangedListener {
 
     private lateinit var textToSpeech: TextToSpeech
-    private lateinit var robot: Robot
+    private lateinit var tts2: TextToSpeech
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,33 +39,38 @@ class Selfie : AppCompatActivity(), TextToSpeech.OnInitListener, OnGoToLocationS
         videoView.requestFocus()
         videoView.setOnPreparedListener { it.setLooping(true) }
 
-        textToSpeech = TextToSpeech(this, this)
-        textToSpeech.setOnUtteranceProgressListener(object: UtteranceProgressListener(){
+
+
+        val utteranceProgressListener = object : UtteranceProgressListener() {
             override fun onStart(p0: String?) {
-                //Toast.makeText(this@Selfie, "Start Speaking", Toast.LENGTH_SHORT).show()
                 Log.i("TemiPhoto", "start speaking")
             }
 
             override fun onDone(p0: String?) {
-//                Toast.makeText(this@Selfie, "Finished Speaking", Toast.LENGTH_SHORT).show()
                 Log.i("TemiPhoto", "finished speaking")
-                goToSelfie()
+                when (p0) {
+                    "1" -> goTo("Selfie1")
+                    "2" -> {
+                        goTo("Selfie2")
+                    }
+                }
             }
 
             override fun onError(p0: String?) {
-//                Toast.makeText(this@Selfie, "Error Speaking", Toast.LENGTH_SHORT).show()
+                Log.i("TemiPhoto", "error speaking")
             }
+        }
 
-        })
+        textToSpeech = TextToSpeech(this, this)
+        textToSpeech.setOnUtteranceProgressListener(utteranceProgressListener)
 
 
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
-            textToSpeech.speak("Great! Let's take a selfie.", TextToSpeech.QUEUE_FLUSH, null, "7")
+            textToSpeech.speak("Great! Let's take a selfie. Follow me please.", TextToSpeech.QUEUE_FLUSH, null, "1")
         }, 1000)
 
         Robot.getInstance().addOnGoToLocationStatusChangedListener(this)
-        // robot = Robot.getInstance()
 
     }
 
@@ -104,15 +109,20 @@ class Selfie : AppCompatActivity(), TextToSpeech.OnInitListener, OnGoToLocationS
             OnGoToLocationStatusChangedListener.GOING -> { Log.i("Temi", "Going Walking") }
             OnGoToLocationStatusChangedListener.COMPLETE -> {
                 Log.i("Temi", "Complete Walking")
-                goToPreviewCamera()
+                when(status) {
+                    "Selfie2" -> {
+                        goToPreviewCamera()
+                    }
+                }
             }
             OnGoToLocationStatusChangedListener.ABORT -> { Log.i("Temi", "Aborting Walking") }
             OnGoToLocationStatusChangedListener.REPOSING -> { Log.i("Temi", "Reposing Walking") }
         }
     }
 
-    private fun goToSelfie() {
-        Robot.getInstance().goTo("selfie")
-
+    private fun goTo(location: String) {
+        Robot.getInstance().goTo(location)
     }
+
 }
+
