@@ -49,9 +49,9 @@ class Selfie : AppCompatActivity(), TextToSpeech.OnInitListener, OnGoToLocationS
             override fun onDone(p0: String?) {
                 Log.i("TemiPhoto", "finished speaking")
                 when (p0) {
-                    "1" -> goTo("Selfie1")
+                    "1" -> Robot.getInstance().goTo("Selfie1")
                     "2" -> {
-                        goTo("Selfie2")
+                        Robot.getInstance().goTo("Selfie2")
                     }
                 }
             }
@@ -67,7 +67,7 @@ class Selfie : AppCompatActivity(), TextToSpeech.OnInitListener, OnGoToLocationS
 
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
-            textToSpeech.speak("Great! Let's take a selfie. Follow me please.", TextToSpeech.QUEUE_FLUSH, null, "1")
+            textToSpeech.speak("Great! Let's take a selfie. Please follow me.", TextToSpeech.QUEUE_FLUSH, null, "1")
         }, 1000)
 
         Robot.getInstance().addOnGoToLocationStatusChangedListener(this)
@@ -110,6 +110,9 @@ class Selfie : AppCompatActivity(), TextToSpeech.OnInitListener, OnGoToLocationS
             OnGoToLocationStatusChangedListener.COMPLETE -> {
                 Log.i("Temi", "Complete Walking")
                 when(status) {
+                    "Selfie1" -> {
+                        textToSpeech.speak("Smile!", TextToSpeech.QUEUE_FLUSH, null, "2")
+                    }
                     "Selfie2" -> {
                         goToPreviewCamera()
                     }
