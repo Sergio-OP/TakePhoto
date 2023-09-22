@@ -16,6 +16,9 @@ import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.os.HandlerThread
+import android.os.Looper
+import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import android.util.Log
 import android.view.Surface
 import android.view.TextureView
@@ -32,8 +35,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class PreviewCamera : AppCompatActivity() {
+class PreviewCamera : AppCompatActivity(), TextToSpeech.OnInitListener {
 
+    private lateinit var textToSpeech: TextToSpeech
 
     private lateinit var capReq: CaptureRequest.Builder
     private lateinit var cameraManager: CameraManager
@@ -62,6 +66,30 @@ class PreviewCamera : AppCompatActivity() {
             capReq.addTarget(imageReader.surface)
             cameraCaptureSession.capture(capReq.build(), null, null)
         }
+
+        textToSpeech = TextToSpeech(this, this)
+        textToSpeech.setOnUtteranceProgressListener(object: UtteranceProgressListener(){
+            override fun onStart(p0: String?) {
+                Log.i("TAG", "start speaking")
+            }
+
+            override fun onDone(p0: String?) {
+                Log.i("TAG", "finished speaking")
+                capReq = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE)
+                capReq.addTarget(imageReader.surface)
+                cameraCaptureSession.capture(capReq.build(), null, null)
+            }
+
+            override fun onError(p0: String?) {
+                Log.i("TAG", "error speaking")
+            }
+        })
+
+        val handler2 = Handler(Looper.getMainLooper())
+        handler2.postDelayed({
+            textToSpeech.speak("Cheers!", TextToSpeech.QUEUE_FLUSH, null, "1")
+        }, 2000)
+
 
         storage = Firebase.storage
 
@@ -204,6 +232,16 @@ class PreviewCamera : AppCompatActivity() {
 
         }
         return downloadUri
+    }
+
+    override fun onInit(status: Int) {
+        if(status == TextToSpeech.SUCCESS){
+            val result = textToSpeech.setLanguage(Locale.ENGLISH)
+
+            if(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED ){
+                Toast.makeText(this, "Language not supported", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
 }
