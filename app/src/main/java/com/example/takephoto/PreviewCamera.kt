@@ -4,7 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.ImageFormat
+import android.graphics.Matrix
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.CameraCaptureSession
 import android.hardware.camera2.CameraDevice
@@ -44,7 +47,6 @@ class PreviewCamera : AppCompatActivity(), TextToSpeech.OnInitListener {
     private lateinit var textureView: TextureView
     private lateinit var cameraCaptureSession: CameraCaptureSession
     private lateinit var cameraDevice: CameraDevice
-    private lateinit var captureRequest: CaptureRequest
     private lateinit var handler: Handler
     private lateinit var handlerThread: HandlerThread
     private lateinit var imageReader: ImageReader
@@ -88,7 +90,7 @@ class PreviewCamera : AppCompatActivity(), TextToSpeech.OnInitListener {
         val handler2 = Handler(Looper.getMainLooper())
         handler2.postDelayed({
             textToSpeech.speak("Cheers!", TextToSpeech.QUEUE_FLUSH, null, "1")
-        }, 2000)
+        }, 4000)
 
 
         storage = Firebase.storage
@@ -132,18 +134,30 @@ class PreviewCamera : AppCompatActivity(), TextToSpeech.OnInitListener {
                 opStream.write(bytes)
                 opStream.close()
 
+                val rotatedBitmap = rotateBitmap(BitmapFactory.decodeFile(file.path), 180f)
+
+                val rotatedFile: File = createImageFile()
+
+                val rotatedOutputStream = FileOutputStream(rotatedFile)
+                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, rotatedOutputStream)
+                rotatedOutputStream.close()
+
                 image.close()
 
                 Toast.makeText(this@PreviewCamera, "Image Captured", Toast.LENGTH_SHORT).show()
 
-                val url = uploadImage(file)
-
-
+                val url = uploadImage(rotatedFile)
             }
         }, handler)
 
 
 
+    }
+
+    private fun rotateBitmap(source: Bitmap, degrees: Float): Bitmap {
+        val matrix = Matrix()
+        matrix.postRotate(degrees)
+        return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
     }
 
     @SuppressLint("MissingPermission")
