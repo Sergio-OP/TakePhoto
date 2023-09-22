@@ -9,15 +9,19 @@ import android.os.Handler
 import android.os.Looper
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
+import com.robotemi.sdk.Robot
+import com.robotemi.sdk.listeners.OnGoToLocationStatusChangedListener
 import java.util.Locale
 
-class Selfie : AppCompatActivity(), TextToSpeech.OnInitListener {
+class Selfie : AppCompatActivity(), TextToSpeech.OnInitListener, OnGoToLocationStatusChangedListener {
 
     private lateinit var textToSpeech: TextToSpeech
+    private lateinit var robot: Robot
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +47,7 @@ class Selfie : AppCompatActivity(), TextToSpeech.OnInitListener {
 
             override fun onDone(p0: String?) {
                 Toast.makeText(this@Selfie, "Finished Speaking", Toast.LENGTH_SHORT).show()
-                goToPreviewCamera()
+                goToSelfie()
             }
 
             override fun onError(p0: String?) {
@@ -54,14 +58,11 @@ class Selfie : AppCompatActivity(), TextToSpeech.OnInitListener {
 
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
-            textToSpeech.speak("Great! Let's take a selfie", TextToSpeech.QUEUE_FLUSH, null, "MyUniqueId")
+            textToSpeech.speak("Great! Let's take a selfie.", TextToSpeech.QUEUE_FLUSH, null, "MyUniqueId")
         }, 1000)
 
-        val intentHandler = Handler(Looper.getMainLooper())
-        intentHandler.postDelayed({
-            goToPreviewCamera()
-        }, 4000)
 
+        robot = Robot.getInstance()
 
     }
 
@@ -86,5 +87,28 @@ class Selfie : AppCompatActivity(), TextToSpeech.OnInitListener {
             textToSpeech.shutdown()
         }
         super.onDestroy()
+    }
+
+    override fun onGoToLocationStatusChanged(
+        location: String,
+        status: String,
+        descriptionId: Int,
+        description: String
+    ) {
+        when(status) {
+            OnGoToLocationStatusChangedListener.START -> { Log.i("Temi", "Start Walking") }
+            OnGoToLocationStatusChangedListener.CALCULATING -> { Log.i("Temi", "Calculating Walking") }
+            OnGoToLocationStatusChangedListener.GOING -> { Log.i("Temi", "Going Walking") }
+            OnGoToLocationStatusChangedListener.COMPLETE -> {
+                Log.i("Temi", "Complete Walking")
+                goToPreviewCamera()
+            }
+            OnGoToLocationStatusChangedListener.ABORT -> { Log.i("Temi", "Aborting Walking") }
+            OnGoToLocationStatusChangedListener.REPOSING -> { Log.i("Temi", "Reposing Walking") }
+        }
+    }
+
+    private fun goToSelfie() {
+        robot.goTo("Selfie", true, null, null)
     }
 }
