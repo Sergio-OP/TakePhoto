@@ -49,9 +49,9 @@ class Selfie : AppCompatActivity(), TextToSpeech.OnInitListener, OnGoToLocationS
             override fun onDone(p0: String?) {
                 Log.i("TemiPhoto", "finished speaking")
                 when (p0) {
-                    "1" -> Robot.getInstance().goTo("Selfie1")
+                    "1" -> Robot.getInstance().goTo("selfie1")
                     "2" -> {
-                        Robot.getInstance().goTo("Selfie2")
+                        Robot.getInstance().goTo("selfie2")
                     }
                 }
             }
