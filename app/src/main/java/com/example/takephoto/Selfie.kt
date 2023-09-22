@@ -42,27 +42,30 @@ class Selfie : AppCompatActivity(), TextToSpeech.OnInitListener, OnGoToLocationS
         textToSpeech = TextToSpeech(this, this)
         textToSpeech.setOnUtteranceProgressListener(object: UtteranceProgressListener(){
             override fun onStart(p0: String?) {
-                Toast.makeText(this@Selfie, "Start Speaking", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this@Selfie, "Start Speaking", Toast.LENGTH_SHORT).show()
+                Log.i("TemiPhoto", "start speaking")
             }
 
             override fun onDone(p0: String?) {
-                Toast.makeText(this@Selfie, "Finished Speaking", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this@Selfie, "Finished Speaking", Toast.LENGTH_SHORT).show()
+                Log.i("TemiPhoto", "finished speaking")
                 goToSelfie()
             }
 
             override fun onError(p0: String?) {
-                Toast.makeText(this@Selfie, "Error Speaking", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this@Selfie, "Error Speaking", Toast.LENGTH_SHORT).show()
             }
 
         })
 
+
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
-            textToSpeech.speak("Great! Let's take a selfie.", TextToSpeech.QUEUE_FLUSH, null, "MyUniqueId")
+            textToSpeech.speak("Great! Let's take a selfie.", TextToSpeech.QUEUE_FLUSH, null, "7")
         }, 1000)
 
-
-        robot = Robot.getInstance()
+        Robot.getInstance().addOnGoToLocationStatusChangedListener(this)
+        // robot = Robot.getInstance()
 
     }
 
@@ -109,6 +112,7 @@ class Selfie : AppCompatActivity(), TextToSpeech.OnInitListener, OnGoToLocationS
     }
 
     private fun goToSelfie() {
-        robot.goTo("Selfie", true, null, null)
+        Robot.getInstance().goTo("selfie")
+
     }
 }
