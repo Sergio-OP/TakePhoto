@@ -64,7 +64,6 @@ dependencies {
 
     implementation ("com.caverock:androidsvg:1.4")
 
-    implementation("com.robotemi:sdk:1.131.4")
 
 
 }

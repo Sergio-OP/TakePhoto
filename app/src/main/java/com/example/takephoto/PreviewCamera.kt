@@ -3,6 +3,9 @@ package com.example.takephoto
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.ImageFormat
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.CameraCaptureSession
@@ -10,6 +13,7 @@ import android.hardware.camera2.CameraDevice
 import android.hardware.camera2.CameraManager
 import android.hardware.camera2.CaptureRequest
 import android.media.ImageReader
+import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -105,9 +109,27 @@ class PreviewCamera : AppCompatActivity() {
 
                 image.close()
 
+                val frameBitmapNoSized = BitmapFactory.decodeResource(resources, R.drawable.photo_frame_1920_1200)
+                val frameBitmap = Bitmap.createScaledBitmap(frameBitmapNoSized, 1920, 1080, true)
+                val options = BitmapFactory.Options()
+                options.inPreferredConfig = Bitmap.Config.ARGB_8888
+                val capturedBitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.size,options)
+                val combinedBitmap = combineImages(capturedBitmap, frameBitmap)
+                val combinedFile: File = createImageFile()
+                val combinedOutputStream = FileOutputStream(combinedFile)
+                combinedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, combinedOutputStream)
+                combinedOutputStream.close()
+                MediaScannerConnection.scanFile(
+                    this@PreviewCamera, arrayOf(combinedFile.toString()), null, null
+                )
+                Log.i("CAMERA_SIZE", "Width: ${capturedBitmap.width} Height: ${capturedBitmap.height}")
+                Log.i("CAMERA_SIZE_FRAME", "Width: ${frameBitmap.width} Height: ${frameBitmap.height}")
+
+
+
                 Toast.makeText(this@PreviewCamera, "Image Captured", Toast.LENGTH_SHORT).show()
 
-                val url = uploadImage(file)
+                val url = uploadImage(combinedFile)
 
 
             }
@@ -116,6 +138,8 @@ class PreviewCamera : AppCompatActivity() {
 
 
     }
+
+
 
     @SuppressLint("MissingPermission")
     private fun openCamera() {
@@ -203,6 +227,16 @@ class PreviewCamera : AppCompatActivity() {
 
         }
         return downloadUri
+    }
+
+    fun combineImages(capturedBitmap: Bitmap, frameBitmap: Bitmap): Bitmap {
+        val combinedBitmap = Bitmap.createBitmap(
+            capturedBitmap.width, capturedBitmap.height, capturedBitmap.config
+        )
+        val canvas = Canvas(combinedBitmap)
+        canvas.drawBitmap(capturedBitmap, 0f, 0f, null)
+        canvas.drawBitmap(frameBitmap, 0f, 0f, null)
+        return combinedBitmap
     }
 
 }
