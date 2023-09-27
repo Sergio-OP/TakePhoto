@@ -147,7 +147,7 @@ class PreviewCamera : AppCompatActivity(), TextToSpeech.OnInitListener {
                 image.close()
 
                 val frameBitmapNoSized = BitmapFactory.decodeResource(resources, R.drawable.photo_frame_1920_1200)
-                val frameBitmap = Bitmap.createScaledBitmap(frameBitmapNoSized, 1920, 1080, true)
+                val frameBitmap = Bitmap.createScaledBitmap(frameBitmapNoSized, 1600, 1200, true)
                 val options = BitmapFactory.Options()
                 options.inPreferredConfig = Bitmap.Config.ARGB_8888
                 val combinedBitmap = combineImages(rotatedBitmap, frameBitmap)
