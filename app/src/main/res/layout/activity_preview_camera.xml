@@ -13,6 +13,13 @@
         android:rotation="90"
         android:scaleY="2" />
 
+    <ImageView
+        android:id="@+id/frameImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/photo_frame_1920_1200" />
+
     <Button
         android:id="@+id/btn_capture"
         android:layout_width="wrap_content"
